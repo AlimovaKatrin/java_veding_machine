@@ -5,6 +5,8 @@ import com.example.vending.vendingMachine.services.VendingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/vending-machine")
 public class VendingController {
@@ -15,8 +17,9 @@ public class VendingController {
     }
 
     @GetMapping()
-    public String getAllMachines() {
-        return "все вендинги";
+    public ResponseEntity<List<VendingMachineDto>> getAllMachines() {
+        List<VendingMachineDto> machines = vendingMachineService.findAll();
+        return ResponseEntity.ok(machines);
     }
 
     @GetMapping("/{id}")
