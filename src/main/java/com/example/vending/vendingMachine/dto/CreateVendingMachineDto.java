@@ -7,18 +7,18 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * DTO для передачи и получения готового торгового автомата.
+ * DTO для создания торгового автомата.
  */
 @Data
 @Builder
-public class VendingMachineDto {
+public class CreateVendingMachineDto {
     private Long id;
 
     /** Адрес установки автомата. */
     private String address;
 
-    /** Id ячеек которые находятся в этом автомате */
-    private List<VendingCellDto> vendingCells;
+    /** Количество ячеек которое создастся и привяжется к этому автомату */
+    private Integer totalCells;
 
     /** Размер вендинговой машины, определяет "глубину" рейла (capacity у VendingCell)*/
     private Integer size;

@@ -1,14 +1,19 @@
 package com.example.vending.vendingMachine.services;
 
+import com.example.vending.vendingMachine.dto.CreateVendingMachineDto;
 import com.example.vending.vendingMachine.dto.VendingMachineDto;
+import com.example.vending.vendingMachine.entities.VendingCellEntity;
 import com.example.vending.vendingMachine.entities.VendingMachineEntity;
+import com.example.vending.vendingMachine.mappers.VendingMachineMapper;
 import com.example.vending.vendingMachine.repositories.VendingRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class VendingService implements IVendingService {
@@ -19,38 +24,38 @@ public class VendingService implements IVendingService {
     }
 
     @Override
-    public Optional<VendingMachineDto> findById(Long id) {
-        Optional<VendingMachineEntity> optionalEntity = vendingRepository.findById(id);
-        return optionalEntity.map(this::mapEntityToDto);
+    public VendingMachineDto findById(Long id) {
+        VendingMachineEntity entity = vendingRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Vending machine not found with id: " + id));
+
+        return VendingMachineMapper.toDto(entity);
     }
 
     @Override
     public List<VendingMachineDto> findAll() {
         return vendingRepository.findAll().stream()
-                .map(this::mapEntityToDto)
+                .map(VendingMachineMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public VendingMachineDto createVendingMachine(VendingMachineDto machineDto) {
-        VendingMachineEntity machineEntity = mapDtoToEntity(machineDto);
-        VendingMachineEntity savedEntity = vendingRepository.save(machineEntity);
-        return mapEntityToDto(savedEntity);
-    }
+    public VendingMachineDto createVendingMachine(CreateVendingMachineDto machineDto) {
+        VendingMachineEntity machine = VendingMachineEntity.builder()
+                .address(machineDto.getAddress())
+                .paymentMethods(machineDto.getPaymentMethods())
+                .build();
 
-    @Override
-    public VendingMachineDto updateVendingMachine(Long id, VendingMachineDto machineDto) {
-        Optional<VendingMachineEntity> existingEntity = vendingRepository.findById(id);
-        if (existingEntity.isPresent()) {
-            VendingMachineEntity updatedEntity = existingEntity.get();
-            updatedEntity.setAddress(machineDto.getAddress());
-            updatedEntity.setPaymentMethods(machineDto.getPaymentMethods());
-            updatedEntity.setTotalCells(machineDto.getTotalCells());
-            VendingMachineEntity savedEntity = vendingRepository.save(updatedEntity);
-            return mapEntityToDto(savedEntity);
-        } else {
-            throw new RuntimeException("Vending machine not found with id: " + id);
-        }
+        List<VendingCellEntity> cells = IntStream.range(0, machineDto.getTotalCells())
+                .mapToObj(i -> VendingCellEntity.builder()
+                        .size(machineDto.getSize())
+                        .vendingMachine(machine)
+                        .build())
+                .collect(Collectors.toList());
+
+        machine.setVendingCells(cells);
+        VendingMachineEntity saved = vendingRepository.save(machine);
+
+        return VendingMachineMapper.toDto(saved);
     }
 
     @Override
@@ -60,27 +65,10 @@ public class VendingService implements IVendingService {
             VendingMachineEntity entityToUpdate = existingEntity.get();
             entityToUpdate.setAddress(newAddress);
             VendingMachineEntity savedEntity = vendingRepository.save(entityToUpdate);
-            return mapEntityToDto(savedEntity);
+            return VendingMachineMapper.toDto(savedEntity);
         } else {
             throw new RuntimeException("Vending machine not found with id: " + id);
         }
     }
 
-        private VendingMachineDto mapEntityToDto(VendingMachineEntity machine) {
-        return VendingMachineDto.builder()
-                .id(machine.getId())
-                .address(machine.getAddress())
-                .paymentMethods(machine.getPaymentMethods())
-                .totalCells(machine.getTotalCells())
-                .build();
-    }
-
-        private VendingMachineEntity mapDtoToEntity(VendingMachineDto machine) {
-        return VendingMachineEntity.builder()
-                .id(machine.getId())
-                .address(machine.getAddress())
-                .paymentMethods(machine.getPaymentMethods())
-                .totalCells(machine.getTotalCells())
-                .build();
-    }
 }

@@ -1,5 +1,6 @@
 package com.example.vending.vendingMachine.controllers;
 
+import com.example.vending.vendingMachine.dto.CreateVendingMachineDto;
 import com.example.vending.vendingMachine.dto.VendingMachineDto;
 import com.example.vending.vendingMachine.services.VendingService;
 import org.springframework.http.HttpStatus;
@@ -7,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/vending-machine")
@@ -25,28 +26,18 @@ public class VendingController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<VendingMachineDto>> getMachineById(@PathVariable Long id) {
-        Optional<VendingMachineDto> machineDto = vendingMachineService.findById(id);
+    public ResponseEntity<VendingMachineDto> getMachineById(@PathVariable Long id) {
+        VendingMachineDto machineDto = vendingMachineService.findById(id);
         return ResponseEntity.ok(machineDto);
     }
 
     @PostMapping()
-    public ResponseEntity<VendingMachineDto> createMachine(@RequestBody VendingMachineDto dto){
+    public ResponseEntity<VendingMachineDto> createMachine(@RequestBody CreateVendingMachineDto dto){
         VendingMachineDto machine = vendingMachineService.createVendingMachine(dto);
         return ResponseEntity.ok(machine);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<VendingMachineDto> updateVendingMachine(@PathVariable Long id, @RequestBody VendingMachineDto dto){
-        try {
-            VendingMachineDto updatedMachine = vendingMachineService.updateVendingMachine(id, dto);
-            return ResponseEntity.ok(updatedMachine);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PatchMapping("/{id}")
+    @PatchMapping("/address/{id}")
     public ResponseEntity<?> updateAddress(@PathVariable Long id, @RequestBody VendingMachineDto dto) {
         if (dto.getAddress() == null) {
             return ResponseEntity.badRequest().body("No address field provided");
@@ -56,7 +47,11 @@ public class VendingController {
             VendingMachineDto updatedMachine = vendingMachineService.updateVendingMachineAddress(id, dto.getAddress());
             return ResponseEntity.ok(updatedMachine);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vending machine not found with id: " + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of(
+                            "code", HttpStatus.NOT_FOUND,
+                            "message", "Vending machine not found with id: " + id
+                    ));
         }
     }
 

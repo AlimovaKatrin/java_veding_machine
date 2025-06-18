@@ -57,32 +57,30 @@
 - Каждая сущность отражает таблицу или структуру хранения данных в БД.
 
 # Краткое описание основных сущностей
-
-#### `PaymentMethod` (enum)
-Перечисление доступных способов оплаты:
-- `APP`
-- `TERMINAL`
-- `CASH`
+### `VendingMachine(VM) <-> VendingCell(VC) <-> Product(P)`
+![UML для вендинга и товарных сущностей](assets/images/UML/VM-VC-P.png)
 
 #### `VendingMachine`
 Описывает вендинговый аппарат (cодержит набор ячеек `VendingCell`):
 - `id`
 - `address`
-- `totalCells`
-- `paymentMethods` (массив типов `PaymentMethod`)
-
-#### `Product`
-Данные о товаре:
-- `id`
-- `name`
+- `size`
+- `paymentMethods` (массив `PaymentMethod`)
+- `vendingCells` (массив `VendingCellEntity`)
 
 #### `VendingCell`
 Ячейка внутри автомата:
 - `id`
-- `cellNumber`
-- `currentQuantity`
-- `product` (ссылка на товар)
-- `vendingMachine` (ссылка на вендинговый аппарат)
+- `size`
+- `product` (ссылка на товары)
+- `vendingMachine` (ссылка на `VendingMachine`)
+  
+#### `Product`
+Данные о товаре:
+- `id`
+- `name`
+- `price`
+- `description`
 
 #### `Order`
 Заказ/покупка:
@@ -99,7 +97,13 @@
 - `order` (ссылка на заказ)
 - `cell` (ссылка на ячейку)
 - `quantity`
-
+- 
+#### `PaymentMethod` (enum)
+Перечисление доступных способов оплаты:
+- `APP`
+- `TERMINAL`
+- `CASH`
+- 
 #### `Payment`
 Информация об оплате:
 - `id`
