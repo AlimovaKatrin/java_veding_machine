@@ -6,7 +6,6 @@ import com.example.vending.vendingMachine.entities.VendingCellEntity;
 import com.example.vending.vendingMachine.entities.VendingMachineEntity;
 import com.example.vending.vendingMachine.mappers.VendingMachineMapper;
 import com.example.vending.vendingMachine.repositories.VendingRepository;
-
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,30 +23,32 @@ public class VendingService implements IVendingService {
 
     @Override
     public Optional<VendingMachineDto> findById(Long id) {
-        return vendingRepository.findById(id)
-                .map(VendingMachineMapper::toDto);
+        return vendingRepository.findById(id).map(VendingMachineMapper::toDto);
     }
 
     @Override
     public List<VendingMachineDto> findAll() {
-        return vendingRepository.findAll().stream()
+        return vendingRepository.findAll()
+                .stream()
                 .map(VendingMachineMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public VendingMachineDto createVendingMachine(CreateVendingMachineDto machineDto) {
-        VendingMachineEntity machine = VendingMachineEntity.builder()
-                .address(machineDto.getAddress())
-                .paymentMethods(machineDto.getPaymentMethods())
-                .build();
+        VendingMachineEntity machine =
+                VendingMachineEntity.builder()
+                        .address(machineDto.getAddress())
+                        .paymentMethods(machineDto.getPaymentMethods())
+                        .build();
 
-        List<VendingCellEntity> cells = IntStream.range(0, machineDto.getTotalCells())
-                .mapToObj(i -> VendingCellEntity.builder()
-                        .size(machineDto.getSize())
-                        .vendingMachine(machine)
-                        .build())
-                .collect(Collectors.toList());
+        List<VendingCellEntity> cells =
+                IntStream.range(0, machineDto.getTotalCells())
+                        .mapToObj(i -> VendingCellEntity.builder()
+                                .size(machineDto.getSize())
+                                .vendingMachine(machine)
+                                .build())
+                        .collect(Collectors.toList());
 
         machine.setVendingCells(cells);
         VendingMachineEntity saved = vendingRepository.save(machine);

@@ -5,7 +5,7 @@ import com.example.vending.product.dto.ProductDto;
 import com.example.vending.product.entities.ProductEntity;
 
 public class ProductMapper {
-    public static ProductDto toDto(ProductEntity entity){
+    public static ProductDto toDto(ProductEntity entity) {
         return ProductDto.builder()
                 .id(entity.getId())
                 .name(entity.getName())
@@ -14,7 +14,7 @@ public class ProductMapper {
                 .build();
     }
 
-    public static ProductEntity toProductEntity(CreateProductDto createDto){
+    public static ProductEntity toProductEntity(CreateProductDto createDto) {
         return ProductEntity.builder()
                 .name(createDto.getName())
                 .description(createDto.getDescription())

@@ -2,7 +2,10 @@ package com.example.vending.vendingMachine.entities;
 
 import com.example.vending.product.entities.ProductEntity;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data

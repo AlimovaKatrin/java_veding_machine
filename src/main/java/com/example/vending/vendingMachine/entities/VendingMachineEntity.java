@@ -2,7 +2,10 @@ package com.example.vending.vendingMachine.entities;
 
 import com.example.vending.common.enums.PaymentMethod;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +24,8 @@ public class VendingMachineEntity {
     private String address;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "vending_machine_payment_methods", joinColumns = @JoinColumn(name = "vending_machine_id"))
+    @CollectionTable(name = "vending_machine_payment_methods", joinColumns = @JoinColumn(name =
+            "vending_machine_id"))
     @Column(name = "payment_method")
     @Enumerated(EnumType.STRING)
     private List<PaymentMethod> paymentMethods;

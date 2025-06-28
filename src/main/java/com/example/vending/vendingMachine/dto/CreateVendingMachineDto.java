@@ -14,15 +14,23 @@ import java.util.List;
 public class CreateVendingMachineDto {
     private Long id;
 
-    /** Адрес установки автомата. */
+    /**
+     * Адрес установки автомата.
+     */
     private String address;
 
-    /** Количество ячеек которое создастся и привяжется к этому автомату */
+    /**
+     * Количество ячеек которое создастся и привяжется к этому автомату
+     */
     private Integer totalCells;
 
-    /** Размер вендинговой машины, определяет "глубину" рейла (capacity у VendingCell)*/
+    /**
+     * Размер вендинговой машины, определяет "глубину" рейла (capacity у VendingCell)
+     */
     private Integer size;
 
-    /** Список поддерживаемых методов оплаты. */
+    /**
+     * Список поддерживаемых методов оплаты.
+     */
     private List<PaymentMethod> paymentMethods;
 }

@@ -47,7 +47,8 @@ public class VendingController {
     }
 
     @PatchMapping("/address/{id}")
-    public ResponseEntity<ApiResponse<VendingMachineDto>> updateAddress(@PathVariable Long id, @RequestBody VendingMachineDto dto) {
+    public ResponseEntity<ApiResponse<VendingMachineDto>> updateAddress(@PathVariable Long id,
+                                                                        @RequestBody VendingMachineDto dto) {
         if (dto.getAddress() == null) {
             return ApiResponse
                     .<VendingMachineDto>error("No address field provided")
@@ -55,7 +56,8 @@ public class VendingController {
         }
 
         try {
-            VendingMachineDto updatedMachine = vendingMachineService.updateVendingMachineAddress(id, dto.getAddress());
+            VendingMachineDto updatedMachine = vendingMachineService.updateVendingMachineAddress(id,
+                                                                                                 dto.getAddress());
             return ApiResponse.success(updatedMachine).toOk();
         } catch (RuntimeException e) {
             return ApiResponse

@@ -20,7 +20,7 @@ public class ProductService implements IProductService {
     @Override
     public ProductDto createProduct(CreateProductDto dto) {
         var product = ProductMapper.toProductEntity(dto);
-        var entity= productRepository.save(product);
+        var entity = productRepository.save(product);
         return ProductMapper.toDto(entity);
     }
 
@@ -43,7 +43,7 @@ public class ProductService implements IProductService {
 
     @Override
     public Optional<ProductDto> updateProductById(Long id, UpdateProductDto dto) {
-       return productRepository.findById(id)
+        return productRepository.findById(id)
                 .map(entity -> {
                     if (dto.getName() != null) {
                         entity.setName(dto.getName());
