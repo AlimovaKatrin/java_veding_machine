@@ -7,7 +7,6 @@ import com.example.vending.vendingMachine.entities.VendingMachineEntity;
 import com.example.vending.vendingMachine.mappers.VendingMachineMapper;
 import com.example.vending.vendingMachine.repositories.VendingRepository;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,11 +23,9 @@ public class VendingService implements IVendingService {
     }
 
     @Override
-    public VendingMachineDto findById(Long id) {
-        VendingMachineEntity entity = vendingRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Vending machine not found with id: " + id));
-
-        return VendingMachineMapper.toDto(entity);
+    public Optional<VendingMachineDto> findById(Long id) {
+        return vendingRepository.findById(id)
+                .map(VendingMachineMapper::toDto);
     }
 
     @Override
